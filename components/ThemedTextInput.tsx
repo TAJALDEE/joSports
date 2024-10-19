@@ -1,30 +1,40 @@
-import { Text, type TextProps, StyleSheet } from "react-native";
-
+import { TextInput, type TextInputProps, StyleSheet } from "react-native";
 import { useThemeColor } from "@/hooks/useThemeColor";
 
-export type ThemedTextProps = TextProps & {
+export type ThemedTextInputProps = TextInputProps & {
   lightColor?: string;
   darkColor?: string;
+  placeholderLightColor?: string;
+  placeholderDarkColor?: string;
   type?: "default" | "title" | "defaultSemiBold" | "subtitle" | "link";
 };
 
-export function ThemedText({
+export function ThemedTextInput({
   style,
   lightColor,
   darkColor,
+  placeholderLightColor,
+  placeholderDarkColor,
   type = "default",
   ...rest
-}: ThemedTextProps) {
+}: ThemedTextInputProps) {
   const color = useThemeColor({ light: lightColor, dark: darkColor }, "text");
-  const titleTextColor = useThemeColor(
+  const borderColor = useThemeColor(
     { light: lightColor, dark: darkColor },
-    "title"
+    "text"
+  );
+  const placeholderColor = useThemeColor(
+    { light: "#B0B0B0", dark: "#B0B0B0" },
+    "secondryText"
   );
 
   return (
-    <Text
+    <TextInput
       style={[
-        { color: type === "title" ? titleTextColor : color }, // Conditional color for title
+        {
+          color: type === "title" ? placeholderColor : color,
+          borderColor: borderColor,
+        },
         type === "default" ? styles.default : undefined,
         type === "title" ? styles.title : undefined,
         type === "defaultSemiBold" ? styles.defaultSemiBold : undefined,
@@ -32,6 +42,7 @@ export function ThemedText({
         type === "link" ? styles.link : undefined,
         style,
       ]}
+      placeholderTextColor={placeholderColor}
       {...rest}
     />
   );

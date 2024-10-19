@@ -1,34 +1,88 @@
-import { Tabs } from 'expo-router';
-import React from 'react';
+import { Tabs } from "expo-router";
+import { TabBarIcon } from "@/components/navigation/TabBarIcon";
+import { useLanguage } from "@/context/LanguageContext";
+import { useThemeColor } from "@/hooks/useThemeColor";
+import { useMap } from "@/context/MapContext";
+import { Button } from "react-native";
 
-import { TabBarIcon } from '@/components/navigation/TabBarIcon';
-import { Colors } from '@/constants/Colors';
-import { useColorScheme } from '@/hooks/useColorScheme';
+type ColorProps = {
+  lightColor?: string;
+  darkColor?: string;
+};
 
-export default function TabLayout() {
-  const colorScheme = useColorScheme();
-
+export default function TabLayout({ lightColor, darkColor }: ColorProps) {
+  const { language, toggleLanguage } = useLanguage();
+  const TabBarIconColor = useThemeColor(
+    { light: lightColor, dark: darkColor },
+    "tint"
+  );
+  const { toggleMap } = useMap();
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
-        headerShown: false,
-      }}>
+        tabBarStyle: { position: "static" },
+        tabBarActiveTintColor: TabBarIconColor,
+        headerShown: true,
+        tabBarHideOnKeyboard: true,
+      }}
+    >
       <Tabs.Screen
         name="index"
         options={{
-          title: 'Home',
+          title: `${language === "en" ? "News" : "اخبار"}`,
+          headerTitleAlign: "center",
           tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon name={focused ? 'home' : 'home-outline'} color={color} />
+            <TabBarIcon
+              name={focused ? "newspaper" : "newspaper-outline"}
+              color={color}
+            />
+          ),
+          // headerRight: () => (
+          //   <Link href={"/library"} asChild style={{ marginHorizontal: 15 }}>
+          //     <Pressable>
+          //       <Text>library</Text>
+          //     </Pressable>
+          //   </Link>
+          // ),
+        }}
+      />
+      <Tabs.Screen
+        name="mapScreen"
+        options={{
+          title: "Map",
+          headerTitleAlign: "center",
+          headerLeft: () => <Button title="Toggle Map" onPress={toggleMap} />,
+          tabBarIcon: ({ color, focused }) => (
+            <TabBarIcon
+              name={focused ? "map-sharp" : "map-sharp"}
+              color={color}
+            />
           ),
         }}
       />
       <Tabs.Screen
-        name="explore"
+        name="profile"
         options={{
-          title: 'Explore',
+          title: `${language === "en" ? "Profile" : "ملفي"}`,
+          headerTitleAlign: "center",
           tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon name={focused ? 'code-slash' : 'code-slash-outline'} color={color} />
+            <TabBarIcon
+              name={focused ? "person" : "person-outline"}
+              color={color}
+            />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="library"
+        options={{
+          title: `${language === "en" ? "Library" : "المكتبة"}`,
+          headerTitleAlign: "center",
+          tabBarIcon: ({ color, focused }) => (
+            <TabBarIcon
+              name={focused ? "book" : "book-outline"}
+              color={color}
+            />
           ),
         }}
       />

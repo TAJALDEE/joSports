@@ -1,0 +1,338 @@
+{
+  "team": {
+    "en": "Jordan national football team",
+    "ar": "المنتخب الأردني لكرة القدم"
+  },
+  "coach": {
+    "name": {
+      "en": "Jamal Sellami",
+      "ar": "جمال السلامي"
+    }
+  },
+  "players": [
+    {
+      "position": "حارس",
+      "name": {
+        "en": "Abdallah Al-Fakhouri",
+        "ar": "عبد الله الفاخوري"
+      },
+      "country": "الأردن",
+      "club": "الوحدات",
+      "age": "24",
+      "foot": "بالقدم اليمنى",
+      "height": "190 سم",
+      "number": 12
+    },
+    {
+      "position": "حارس",
+      "name": {
+        "en": "Ahmad Mohannad Talab Al Juaidi",
+        "ar": "أحمد مهند الجعيدي"
+      },
+      "country": "الأردن",
+      "club": "شباب الأردن",
+      "age": "23",
+      "foot": "اليمنى",
+      "height": "180",
+      "number": "22"
+    },
+    {
+      "position": "حارس",
+      "name": {
+        "en": "Yazeed Abu Laila",
+        "ar": "يزيد أبو ليلى"
+      },
+      "country": "الأردن",
+      "club": "الحسين إربد",
+      "age": "31",
+      "foot": "ليمنى",
+      "height": "187 سم",
+      "number": 1
+    },
+    {
+      "position": "دفاع",
+      "name": {
+        "en": "Abdallah Nasib",
+        "ar": "عبد الله نصيب"
+      },
+      "country": "الأردن",
+      "club": "الحسين إربد",
+      "age": "31",
+      "foot": "",
+      "height": "183 سم",
+      "number": 3
+    },
+    {
+      "position": "دفاع",
+      "name": {
+        "en": "Anas Bani Yassen",
+        "ar": "أنس بني ياسين"
+      },
+      "country": "الأردن",
+      "club": "الفيصلي",
+      "age": "35",
+      "foot": "بالقدمين",
+      "height": "185 سم",
+      "number": 19
+    },
+    {
+      "position": "دفاع",
+      "name": {
+        "en": "Bara'a Sami Musa Marei",
+        "ar": "براء مرعي"
+      },
+      "country": "الأردن",
+      "club": "الفيصلي",
+      "age": "30",
+      "foot": "ليمنى",
+      "height": "186 سم",
+      "number": 4
+    },
+    {
+      "position": "دفاع",
+      "name": {
+        "en": "Ehsan Haddad",
+        "ar": "احسان حداد"
+      },
+      "country": "الأردن",
+      "club": "الحسين إربد",
+      "age": "30",
+      "foot": "اليمنى",
+      "height": "185 سم",
+      "number": 23
+    },
+    {
+      "position": "دفاع",
+      "name": {
+        "en": "Feras Shelbaieh",
+        "ar": "فراس شلباية"
+      },
+      "country": "الأردن",
+      "club": "الوحدات",
+      "age": "30",
+      "foot": "اليمنى",
+      "height": "174 سم",
+      "number": 16
+    },
+    {
+      "position": "دفاع",
+      "name": {
+        "en": "Salem Al-Ajalin",
+        "ar": "سالم العجالين"
+      },
+      "country": "العراق",
+      "club": "الحدود",
+      "age": "36",
+      "foot": "اليسرى",
+      "height": "186",
+      "number": 17
+    },
+    {
+      "position": "دفاع",
+      "name": {
+        "en": "Yazan Alarab",
+        "ar": "يزن العرب"
+      },
+      "country": "العراق",
+      "club": "الشرطة",
+      "age": "28",
+      "foot": "اليسرى",
+      "height": "186",
+      "number": 5
+    },
+    {
+      "position": "وسط",
+      "name": {
+        "en": "Anas Al-Awadat",
+        "ar": "أنس احمد العوضات"
+      },
+      "country": "الأردن",
+      "club": "الوحدات",
+      "age": "26",
+      "foot": "ليمنى",
+      "height": "169",
+      "number": 25
+    },
+    {
+      "position": "وسط",
+      "name": {
+        "en": "Fadi Awad",
+        "ar": "فادي عوض"
+      },
+      "country": "ماليزيا",
+      "club": "الشرطة",
+      "age": "31",
+      "foot": "اليمنى",
+      "height": "167 سم",
+      "number": 26
+    },
+    {
+      "position": "وسط",
+      "name": {
+        "en": "Ibrahim Sadeh",
+        "ar": "إبراهيم محمد سعادة"
+      },
+      "country": "قطر",
+      "club": "الخور",
+      "age": "24",
+      "foot": "اليمنى",
+      "height": "182",
+      "number": 15
+    },
+    {
+      "position": "وسط",
+      "name": {
+        "en": "Mahmoud Al Mardi",
+        "ar": "محمود مرضي"
+      },
+      "country": "الأردن",
+      "club": "الحسين إربد",
+      "age": "31",
+      "foot": "اليمنى",
+      "height": "179",
+      "number": 13
+    },
+    {
+      "position": "وسط",
+      "name": {
+        "en": "Mohannad Abu Taha",
+        "ar": "مهند أبو طه"
+      },
+      "country": "الأردن",
+      "club": "الوحدات",
+      "age": "",
+      "foot": "",
+      "height": "",
+      "number": 6
+    },
+    {
+      "position": "وسط",
+      "name": {
+        "en": "Nizar Al Rashdan",
+        "ar": "نزار الرشدان"
+      },
+      "country": "الإمارات",
+      "club": "الإمارات",
+      "age": "21",
+      "foot": "اليسرى",
+      "height": "176",
+      "number": 21
+    },
+    {
+      "position": "وسط",
+      "name": {
+        "en": "Noor Al Rawabdeh",
+        "ar": "نور الدين الروابدة"
+      },
+      "country": "ماليزيا",
+      "club": "سيلانغور",
+      "age": "",
+      "foot": "",
+      "height": "",
+      "number": 8
+    },
+    {
+      "position": "وسط",
+      "name": {
+        "en": "Rajaei Ayed",
+        "ar": "رجائي عايد"
+      },
+      "country": "الأردن",
+      "club": "الحسين إربد",
+      "age": "27",
+      "foot": "اليمنى",
+      "height": "182",
+      "number": 14
+    },
+    {
+      "position": "وسط",
+      "name": {
+        "en": "Saleh Ratib",
+        "ar": "صالح راتب"
+      },
+      "country": "الأردن",
+      "club": "الوحدات",
+      "age": "29",
+      "foot": "اليمنى",
+      "height": "177 سم",
+      "number": 18
+    },
+    {
+      "position": "وسط",
+      "name": {
+        "en": "Yousef Abu Jalboush",
+        "ar": "يوسف ابو جلبوش"
+      },
+      "country": "الأردن",
+      "club": "الحسين إربد",
+      "age": "26",
+      "foot": "اليسرى",
+      "height": "172",
+      "number": 24
+    },
+    {
+      "position": "هجوم",
+      "name": {
+        "en": "Ali Iyad Olwan",
+        "ar": "علي علوان"
+      },
+      "country": "ماليزيا",
+      "club": "سيلانغور",
+      "age": "24",
+      "foot": "اليمنى",
+      "height": "181",
+      "number": ""
+    },
+    {
+      "position": "هجوم",
+      "name": {
+        "en": "Hamza Al Dardour",
+        "ar": "حمزة الدردور"
+      },
+      "country": "الأردن",
+      "club": "الرمثا",
+      "age": "33",
+      "foot": "ليمنى",
+      "height": "175",
+      "number": 20
+    },
+    {
+      "position": "هجوم",
+      "name": {
+        "en": "Mousa Tamari",
+        "ar": "موسى التعمري"
+      },
+      "country": "فرنسا",
+      "club": "مونبلييه",
+      "age": "27",
+      "foot": "ليسرى",
+      "height": "175",
+      "number": 10
+    },
+    {
+      "position": "هجوم",
+      "name": {
+        "en": "Yazan Al Naimat",
+        "ar": "يزن النعيمات"
+      },
+      "country": "قطر",
+      "club": "العربي",
+      "age": "25",
+      "foot": "اليمنى",
+      "height": "178 سم",
+      "number": 11
+    }
+  ],
+  "doctor": {
+    "name": {
+      "en": "Bashir Al Nsour",
+      "ar": "بشير النسور"
+    }
+  },
+  "admin": {
+    "name": {
+      "en": "Osama Tala",
+      "ar": "أسامة طلال صباح"
+    }
+  }
+}

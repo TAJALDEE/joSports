@@ -1,0 +1,30 @@
+[
+  {
+    "id": "1",
+    "name": "Ahmad Al Dwairi",
+    "position": "Center",
+    "team": "Jordanian National Team",
+    "height": "7'0\"",
+    "weight": "230 lbs",
+    "achievements": [
+      "Bronze Medal at the FIBA Asia Cup (2017)",
+      "Top Rebounder in the Jordanian League (2020)",
+      "MVP of the Arab Club Championship (2021)"
+    ],
+    "bio": "Ahmad Al Dwairi is known for his shot-blocking ability and rebounding skills, making him a key player for the Jordanian national team."
+  },
+  {
+    "id": "2",
+    "name": "Zaid Abbas",
+    "position": "Forward",
+    "team": "Jordanian National Team",
+    "height": "6'7\"",
+    "weight": "205 lbs",
+    "achievements": [
+      "FIBA Asia Cup (2011) - Bronze Medal",
+      "MVP of the Jordan Basketball League (2018)",
+      "Top Scorer in the Jordan League (2019)"
+    ],
+    "bio": "Zaid Abbas is a versatile forward known for his scoring ability and defensive skills."
+  }
+]

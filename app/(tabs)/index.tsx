@@ -1,70 +1,172 @@
-import { Image, StyleSheet, Platform } from 'react-native';
+import React, { useEffect, useState } from "react";
+import {
+  ScrollView,
+  StyleSheet,
+  Pressable,
+  FlatList,
+  Image,
+} from "react-native";
+import { ThemedText as Text } from "@/components/ThemedText";
+import { ThemedView as View } from "@/components/ThemedView";
+import { ThemedButton } from "@/components/ThemedButton";
+import { useNavigation, NavigationProp } from "@react-navigation/native";
 
-import { HelloWave } from '@/components/HelloWave';
-import ParallaxScrollView from '@/components/ParallaxScrollView';
-import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
+interface ItemType {
+  id: string;
+  title: string;
+  description: string;
+  image: string;
+  sportId: string;
+  date: string;
+}
+interface NewsCardProps {
+  item: ItemType;
+}
+type NewsDetailParams = {
+  id: string;
+  title: string;
+  description: string;
+  image: string;
+  sportid: string;
+  date: string;
+};
+type RootStackParamList = {
+  newsDetail: NewsDetailParams;
+};
 
-export default function HomeScreen() {
-  return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
+export default function News() {
+  const [test, setTest] = useState<number>(0);
+
+  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
+  const newsData: ItemType[] = [
+    {
+      id: "1",
+      title: "Jordan National Team Secures Victory in Latest Match!",
+      description: `  The Jordan national football team has a rich history in the sport, competing in various international tournaments and championships. 
+  Established in 1953, the team has made significant strides in improving its performance on the global stage. 
+
+  Over the years, they have participated in numerous World Cup qualifiers and Asian Cup tournaments, showcasing the talent and determination of Jordanian players. 
+  The team's journey has been marked by both challenges and triumphs, with memorable matches that have captured the hearts of fans across the nation.
+
+  In recent years, the Jordan Football Association has invested in youth development programs, aiming to nurture the next generation of football stars. 
+  This focus on grassroots development is essential for the long-term success of the team, as young talents emerge from local academies, bringing fresh energy and skills to the national squad.
+
+  The players have shown remarkable resilience and teamwork, working tirelessly to elevate Jordan's status in international football. 
+  Matches against rival teams often see passionate displays of skill, strategy, and sportsmanship, embodying the spirit of competition that football is known for.
+
+  Furthermore, the support from fans plays a crucial role in motivating the players. 
+  Stadiums filled with cheering supporters create an electrifying atmosphere, driving the team to give their best performance.
+
+  Looking ahead, the Jordan national football team aims to qualify for future World Cup tournaments, aspiring to compete with the best teams in the world. 
+  With a combination of experienced players and emerging talents, the team is poised for greater achievements in the years to come.
+`,
+      image:
+        "https://thumbs.dreamstime.com/b/jordan-national-football-team-flag-soaring-eagle-seamless-loop-motion-ripples-small-waves-flag-editorial-jordan-236556335.jpg",
+      sportId: "football",
+      date: "2024-09-20T12:00:00Z", // Example date
+    },
+    {
+      id: "2",
+      title: "Upcoming Qualifiers: Jordan Aims for World Cup Spot",
+      description:
+        "As the World Cup qualifiers approach, the Jordan national team is gearing up to secure their place on the global stage.",
+      image:
+        "https://img.freepik.com/premium-vector/banner-design-football-ball-with-flag-jordan-football-net-goal-by-national-soccer-team-jordan_292608-23522.jpg",
+      sportId: "football",
+      date: "2024-09-15T09:30:00Z", // Example date
+    },
+    {
+      id: "3",
+      title: "Young Talent Shines in Jordan Football Academy",
+      description:
+        "The Jordan Football Academy is producing a new generation of stars, with young players impressing scouts across the region.",
+      image:
+        "https://img.freepik.com/premium-photo/jordan-country-flag-draped-football-soccer-pitch-ball-3d-rendering_601748-25490.jpg",
+      sportId: "football",
+      date: "2024-09-10T08:00:00Z", // Example date
+    },
+  ];
+
+  // Sort news data by date
+  const sortedNewsData = newsData.sort(
+    (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+  );
+
+  const NewsCard: React.FC<NewsCardProps> = ({ item }) => (
+    <View style={styles.card}>
+      <Pressable>
+        <Text>Date: {item.date.substring(0, 10)}</Text>
         <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
+          source={{ uri: item.image }}
+          style={{ width: "100%", height: 200 }}
         />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
-        <HelloWave />
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({ ios: 'cmd + d', android: 'cmd + m' })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-        <ThemedText>
-          Tap the Explore tab to learn more about what's included in this starter app.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          When you're ready, run{' '}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
+        <View>
+          <Text style={styles.title}>{item.title}</Text>
+          <Text
+            numberOfLines={2}
+            ellipsizeMode="tail"
+            style={styles.description}
+          >
+            {item.description}
+          </Text>
+          <ThemedButton
+            title="View More"
+            onPress={() =>
+              navigation.navigate("newsDetail", {
+                id: item.id,
+                title: item.title,
+                description: item.description,
+                image: item.image,
+                sportid: item.sportId,
+                date: item.date,
+              })
+            }
+          />
+        </View>
+      </Pressable>
+      <View style={styles.line} />
+    </View>
+  );
+
+  const renderItem = ({ item }: { item: ItemType }) => <NewsCard item={item} />;
+
+  return (
+    <View>
+      <FlatList
+        data={sortedNewsData} // Use sorted data
+        renderItem={renderItem}
+        keyExtractor={(item) => item.id}
+      />
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
+  Container: {
+    flex: 1,
+    padding: 10,
+    justifyContent: "center",
+    alignItems: "center",
   },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
+  Center: {
+    justifyContent: "center",
+    alignItems: "center",
   },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
+  card: {
+    margin: 20,
+  },
+  title: {
+    fontSize: 18,
+    fontWeight: "bold",
+    marginVertical: 5,
+  },
+  description: {
+    margin: 5,
+  },
+  line: {
+    height: 1,
+    backgroundColor: "#ccc",
+    marginVertical: 10,
+    marginTop: 30,
   },
 });
