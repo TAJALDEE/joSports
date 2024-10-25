@@ -35,8 +35,11 @@ export default function Login() {
   }, []);
 
   const handleLogin = () => {
-    console.log("Username:", username);
-    console.log("Password:", password);
+    alert(
+      language === "en"
+        ? "Please enter the correct email and password."
+        : "الرجاء ادخال الحساب او كلمة السر الصحيحة"
+    );
   };
 
   const handleForgotPassword = () => {

@@ -3,7 +3,7 @@ import { TabBarIcon } from "@/components/navigation/TabBarIcon";
 import { useLanguage } from "@/context/LanguageContext";
 import { useThemeColor } from "@/hooks/useThemeColor";
 import { useMap } from "@/context/MapContext";
-import { Button } from "react-native";
+import PathIcon from "@/assets/icons/PathIcon";
 
 type ColorProps = {
   lightColor?: string;
@@ -47,15 +47,32 @@ export default function TabLayout({ lightColor, darkColor }: ColorProps) {
         }}
       />
       <Tabs.Screen
+        name="matches"
+        options={{
+          title: `${language === "en" ? "Matches" : "المباريات"}`,
+          headerTitleAlign: "center",
+          tabBarIcon: ({ color, focused }) => (
+            <TabBarIcon name={focused ? "trophy" : "trophy"} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
         name="mapScreen"
         options={{
           title: "Map",
           headerTitleAlign: "center",
-          headerLeft: () => <Button title="Toggle Map" onPress={toggleMap} />,
+          headerTitleStyle: {
+            color: "black",
+          },
+          headerStyle: {
+            backgroundColor: "#A0A0A0",
+            elevation: 0,
+          },
+          //headerLeft: () => <Button title="Toggle Map" onPress={toggleMap} />,
           tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon
-              name={focused ? "map-sharp" : "map-sharp"}
-              color={color}
+            <PathIcon
+              height={24} // Set the icon height
+              fill={color} // Set the icon color
             />
           ),
         }}

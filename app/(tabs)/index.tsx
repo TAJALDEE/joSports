@@ -15,125 +15,136 @@ interface ItemType {
   id: string;
   title: string;
   description: string;
-  image: string;
+  images: string[]; // Ensure this is always an array of strings
   sportId: string;
   date: string;
 }
+
 interface NewsCardProps {
   item: ItemType;
 }
+
 type NewsDetailParams = {
   id: string;
   title: string;
   description: string;
-  image: string;
+  images: string[]; // This should be an array
   sportid: string;
   date: string;
 };
+
 type RootStackParamList = {
   newsDetail: NewsDetailParams;
+  buyTickets: { matchId: string; matchTitle: string };
 };
 
 export default function News() {
-  const [test, setTest] = useState<number>(0);
-
+  const [newsData, setNewsData] = useState<ItemType[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
-  const newsData: ItemType[] = [
-    {
-      id: "1",
-      title: "Jordan National Team Secures Victory in Latest Match!",
-      description: `  The Jordan national football team has a rich history in the sport, competing in various international tournaments and championships. 
-  Established in 1953, the team has made significant strides in improving its performance on the global stage. 
 
-  Over the years, they have participated in numerous World Cup qualifiers and Asian Cup tournaments, showcasing the talent and determination of Jordanian players. 
-  The team's journey has been marked by both challenges and triumphs, with memorable matches that have captured the hearts of fans across the nation.
+  useEffect(() => {
+    const fetchNews = async () => {
+      try {
+        const response = await fetch(
+          "https://sqljosports.vercel.app/api/news/read"
+        );
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        const data: ItemType[] = await response.json();
 
-  In recent years, the Jordan Football Association has invested in youth development programs, aiming to nurture the next generation of football stars. 
-  This focus on grassroots development is essential for the long-term success of the team, as young talents emerge from local academies, bringing fresh energy and skills to the national squad.
+        // Parse images properly
+        const parsedData = data.map((item) => ({
+          ...item,
+          images: Array.isArray(item.images)
+            ? item.images
+            : JSON.parse(item.images), // Ensure it's an array
+        }));
 
-  The players have shown remarkable resilience and teamwork, working tirelessly to elevate Jordan's status in international football. 
-  Matches against rival teams often see passionate displays of skill, strategy, and sportsmanship, embodying the spirit of competition that football is known for.
+        setNewsData(parsedData);
+      } catch (error) {
+        console.error("Error fetching news:", error);
+        setError("Failed to load news. Please try again later.");
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  Furthermore, the support from fans plays a crucial role in motivating the players. 
-  Stadiums filled with cheering supporters create an electrifying atmosphere, driving the team to give their best performance.
+    fetchNews();
+  }, []);
 
-  Looking ahead, the Jordan national football team aims to qualify for future World Cup tournaments, aspiring to compete with the best teams in the world. 
-  With a combination of experienced players and emerging talents, the team is poised for greater achievements in the years to come.
-`,
-      image:
-        "https://thumbs.dreamstime.com/b/jordan-national-football-team-flag-soaring-eagle-seamless-loop-motion-ripples-small-waves-flag-editorial-jordan-236556335.jpg",
-      sportId: "football",
-      date: "2024-09-20T12:00:00Z", // Example date
-    },
-    {
-      id: "2",
-      title: "Upcoming Qualifiers: Jordan Aims for World Cup Spot",
-      description:
-        "As the World Cup qualifiers approach, the Jordan national team is gearing up to secure their place on the global stage.",
-      image:
-        "https://img.freepik.com/premium-vector/banner-design-football-ball-with-flag-jordan-football-net-goal-by-national-soccer-team-jordan_292608-23522.jpg",
-      sportId: "football",
-      date: "2024-09-15T09:30:00Z", // Example date
-    },
-    {
-      id: "3",
-      title: "Young Talent Shines in Jordan Football Academy",
-      description:
-        "The Jordan Football Academy is producing a new generation of stars, with young players impressing scouts across the region.",
-      image:
-        "https://img.freepik.com/premium-photo/jordan-country-flag-draped-football-soccer-pitch-ball-3d-rendering_601748-25490.jpg",
-      sportId: "football",
-      date: "2024-09-10T08:00:00Z", // Example date
-    },
-  ];
-
-  // Sort news data by date
+  // Sort news data by date after fetching
   const sortedNewsData = newsData.sort(
     (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
   );
 
-  const NewsCard: React.FC<NewsCardProps> = ({ item }) => (
-    <View style={styles.card}>
-      <Pressable>
-        <Text>Date: {item.date.substring(0, 10)}</Text>
-        <Image
-          source={{ uri: item.image }}
-          style={{ width: "100%", height: 200 }}
-        />
-        <View>
-          <Text style={styles.title}>{item.title}</Text>
-          <Text
-            numberOfLines={2}
-            ellipsizeMode="tail"
-            style={styles.description}
-          >
-            {item.description}
-          </Text>
-          <ThemedButton
-            title="View More"
-            onPress={() =>
-              navigation.navigate("newsDetail", {
-                id: item.id,
-                title: item.title,
-                description: item.description,
-                image: item.image,
-                sportid: item.sportId,
-                date: item.date,
-              })
-            }
-          />
-        </View>
-      </Pressable>
-      <View style={styles.line} />
-    </View>
-  );
+  const NewsCard: React.FC<NewsCardProps> = ({ item }) => {
+    const images = Array.isArray(item.images) ? item.images : []; // Ensure images is an array
+
+    return (
+      <View style={styles.card}>
+        <Pressable>
+          <Text>Date: {item.date.substring(0, 10)}</Text>
+
+          {images.length === 1 ? (
+            <Image source={{ uri: images[0] }} style={styles.singleImage} />
+          ) : (
+            <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+              {images.map((imageUri, index) => (
+                <Image
+                  key={index}
+                  source={{ uri: imageUri }}
+                  style={styles.image}
+                />
+              ))}
+            </ScrollView>
+          )}
+
+          <View>
+            <Text style={styles.title}>{item.title}</Text>
+            <Text
+              numberOfLines={2}
+              ellipsizeMode="tail"
+              style={styles.description}
+            >
+              {item.description}
+            </Text>
+            <ThemedButton
+              title="View More"
+              onPress={() =>
+                navigation.navigate("newsDetail", {
+                  id: item.id,
+                  title: item.title,
+                  description: item.description,
+                  images: images, // This should be an array of strings
+                  sportid: item.sportId,
+                  date: item.date,
+                })
+              }
+            />
+          </View>
+        </Pressable>
+        <View style={styles.line} />
+      </View>
+    );
+  };
 
   const renderItem = ({ item }: { item: ItemType }) => <NewsCard item={item} />;
+
+  if (loading) {
+    return <Text>Loading...</Text>;
+  }
+
+  if (error) {
+    return <Text>{error}</Text>;
+  }
 
   return (
     <View>
       <FlatList
-        data={sortedNewsData} // Use sorted data
+        data={sortedNewsData}
         renderItem={renderItem}
         keyExtractor={(item) => item.id}
       />
@@ -142,18 +153,20 @@ export default function News() {
 }
 
 const styles = StyleSheet.create({
-  Container: {
-    flex: 1,
-    padding: 10,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  Center: {
-    justifyContent: "center",
-    alignItems: "center",
-  },
   card: {
     margin: 20,
+  },
+  singleImage: {
+    resizeMode: "cover",
+    width: "100%",
+    height: 200,
+    marginBottom: 10,
+  },
+  image: {
+    resizeMode: "cover",
+    width: 100,
+    height: 200,
+    marginRight: 10,
   },
   title: {
     fontSize: 18,

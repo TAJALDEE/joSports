@@ -1,23 +1,57 @@
-import React from "react";
-import { ScrollView, StyleSheet, Image } from "react-native";
+import React, { useState } from "react";
+import {
+  ScrollView,
+  StyleSheet,
+  Image,
+  TouchableWithoutFeedback,
+} from "react-native";
 import { ThemedText as Text } from "@/components/ThemedText";
 import { ThemedView as View } from "@/components/ThemedView";
 import { useRoute } from "@react-navigation/native";
+import ImageView from "react-native-image-viewing";
 
 export default function NewsDetail() {
   const route = useRoute();
-  const { title, image, description, sportid } = route.params as {
+  const { title, images, description, sportid } = route.params as {
     title: string;
-    image: string;
+    images: string[];
     description: string;
     sportid: string;
   };
+
+  const [visible, setIsVisible] = useState(false);
+  const [imageIndex, setImageIndex] = useState(0);
+
+  // Transform images to the required format
+  const formattedImages = images.map((imageUri) => ({ uri: imageUri }));
 
   return (
     <View style={styles.container}>
       <ScrollView>
         <Text style={styles.title}>{title}</Text>
-        <Image source={{ uri: image }} style={styles.image} />
+
+        {/* Render the images with a touchable area to open the ImageView */}
+        <View style={styles.imageContainer}>
+          {formattedImages.map((image, index) => (
+            <TouchableWithoutFeedback
+              key={index}
+              onPress={() => {
+                setImageIndex(index);
+                setIsVisible(true);
+              }}
+            >
+              <Image source={image} style={styles.image} resizeMode="cover" />
+            </TouchableWithoutFeedback>
+          ))}
+        </View>
+
+        <ImageView
+          images={formattedImages}
+          imageIndex={imageIndex}
+          visible={visible}
+          onRequestClose={() => setIsVisible(false)}
+        />
+
         <Text style={styles.description}>{description}</Text>
       </ScrollView>
     </View>
@@ -37,13 +71,15 @@ const styles = StyleSheet.create({
   image: {
     width: "100%",
     height: 200,
-    borderRadius: 10, // Optional: to give it a softer look
+    borderRadius: 10,
     marginBottom: 15,
+    marginRight: 10, // Add some margin for spacing
   },
-  sportId: {
-    fontSize: 14,
-    color: "#666", // Optional: color for sport ID
-    marginBottom: 10,
+  imageContainer: {
+    flex: 1,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    flexWrap: "wrap",
   },
   description: {
     fontSize: 16,

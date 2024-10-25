@@ -1,4 +1,4 @@
-import React, { Suspense, useEffect, useState } from "react";
+import React, { Suspense, useEffect, useRef, useState } from "react";
 import {
   ScrollView,
   StyleSheet,
@@ -20,6 +20,7 @@ import {
   IconFootball,
 } from "@/assets/icons/icons";
 import LoadLibraryComponent from "@/components/LoadLibraryComponent"; // a switch that choose the import path
+import { useIsFocused } from "@react-navigation/native";
 
 // Define the type for component keys
 type ComponentOptions = "Teams" | "Players" | "Rules";
@@ -52,7 +53,7 @@ export default function SportsTab({ lightColor, darkColor }: ThemedViewProps) {
   );
   const sports = [
     {
-      sportId: 1,
+      sportId: 0,
       en: "Football",
       ar: "كرة القدم",
       icon: (color: string | undefined) => (
@@ -60,7 +61,7 @@ export default function SportsTab({ lightColor, darkColor }: ThemedViewProps) {
       ),
     },
     {
-      sportId: 2,
+      sportId: 1,
       en: "Basketball",
       ar: "كرة السلة",
       icon: (color: string | undefined) => (
@@ -68,7 +69,7 @@ export default function SportsTab({ lightColor, darkColor }: ThemedViewProps) {
       ),
     },
     {
-      sportId: 3,
+      sportId: 2,
       en: "Swimming",
       ar: "السباحة",
       icon: (color: string | undefined) => (
@@ -76,7 +77,7 @@ export default function SportsTab({ lightColor, darkColor }: ThemedViewProps) {
       ),
     },
     {
-      sportId: 4,
+      sportId: 3,
       en: "Tennis",
       ar: "التنس الأرضي",
       icon: (color: string | undefined) => (
@@ -84,7 +85,7 @@ export default function SportsTab({ lightColor, darkColor }: ThemedViewProps) {
       ),
     },
     {
-      sportId: 5,
+      sportId: 4,
       en: "Volleyball",
       ar: "كرة الطائرة",
       icon: (color: string | undefined) => (
@@ -208,26 +209,52 @@ export default function SportsTab({ lightColor, darkColor }: ThemedViewProps) {
         throw new Error("Unknown component type");
     }
   };
+  useEffect(() => {
+    const isArabic = I18nManager.isRTL;
+    if (isArabic) {
+      I18nManager.allowRTL(false); // Force right-to-left layout
+      console.log("arabic");
+    } else {
+      console.log("english");
+    }
+  }, [language]);
+
+  const scrollViewRef = useRef<ScrollView>(null);
+  const isFocused = useIsFocused();
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      const itemWidth = 110;
+      const scrollToX = selectedSport.sportId * itemWidth;
+      const lenght = (sports.length - 1) * itemWidth - 300;
+      const scrollToXar = lenght - scrollToX;
+      console.log(lenght);
+      console.log(scrollToX);
+      if (scrollViewRef.current) {
+        scrollViewRef.current.scrollTo({
+          x: language === "ar" ? scrollToXar : scrollToX,
+        });
+      }
+    }, 10);
+    return () => clearTimeout(timer); // Cleanup on unmount
+  }, [isFocused, selectedSport]); // Runs when selectedSport changes
+
   return (
     <View style={styles.container}>
-      <View>{isRTL ? <Text>RTl</Text> : <Text>ltr</Text>}</View>
-      {/* Header Bar for Sports */}
       <View style={[styles.headerBar, horizontal ? {} : styles.fullScreen]}>
         {horizontal ? (
           <ScrollView
+            ref={scrollViewRef}
             horizontal
             showsHorizontalScrollIndicator={false}
             contentContainerStyle={{
               flexDirection: language === "en" ? "row" : "row-reverse",
+              alignItems: "flex-start",
             }}
           >
             {sports.map((sport) => (
               <Pressable
                 key={sport.sportId}
-                onPress={() => {
-                  setSelectedSport(sport);
-                  setHorizontal(true);
-                }}
+                onPress={() => setSelectedSport(sport)}
               >
                 <View style={{ alignItems: "center" }}>
                   {sport.sportId === selectedSport.sportId
@@ -240,6 +267,7 @@ export default function SportsTab({ lightColor, darkColor }: ThemedViewProps) {
                         paddingHorizontal: 12,
                         fontSize: 16,
                         marginHorizontal: 5,
+                        alignSelf: "flex-start",
                       },
                       selectedSport.sportId === sport.sportId && {
                         color: selectedBackgroundColor,
@@ -256,7 +284,7 @@ export default function SportsTab({ lightColor, darkColor }: ThemedViewProps) {
         ) : (
           <View
             style={{
-              flexDirection: "row",
+              flexDirection: language === "en" ? "row" : "row-reverse",
               flexWrap: "wrap",
               justifyContent: "center",
             }}

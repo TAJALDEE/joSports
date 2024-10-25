@@ -1,4 +1,4 @@
-import React, { Suspense, useEffect, useState } from "react";
+import React, { Suspense, useEffect, useRef, useState } from "react";
 import {
   ScrollView,
   StyleSheet,
@@ -6,104 +6,132 @@ import {
   ActivityIndicator,
   BackHandler,
   I18nManager,
+  FlatList,
+  Image,
 } from "react-native";
 import { useThemeColor } from "@/hooks/useThemeColor";
 import { ThemedText as Text } from "@/components/ThemedText";
 import { ThemedViewProps, ThemedView as View } from "@/components/ThemedView";
-import { ThemedButton as Button } from "@/components/ThemedButton";
 import { useLanguage } from "@/context/LanguageContext";
-import {
-  IconVolleyball,
-  IconSwimming,
-  IconTennis,
-  IconBasketball,
-  IconFootball,
-} from "@/assets/icons/icons";
+import * as Icons from "@/assets/icons/icons";
 import LoadLibraryComponent from "@/components/LoadLibraryComponent"; // a switch that choose the import path
+import {
+  NavigationProp,
+  useIsFocused,
+  useNavigation,
+} from "@react-navigation/native";
 
 // Define the type for component keys
 type ComponentOptions = "Teams" | "Players" | "Rules";
+interface Sport {
+  sportId: number;
+  en: string;
+  ar: string;
+}
+interface Team {
+  teamId: number;
+  en: string;
+  ar: string;
+}
 
+interface Player {
+  playerId: number;
+  en: string;
+  ar: string;
+}
+type Nt = {
+  TeamDetails: Team;
+};
 export default function SportsTab({ lightColor, darkColor }: ThemedViewProps) {
   const { language } = useLanguage();
   const isRTL = language === "ar";
   const [horizontal, setHorizontal] = useState(true);
+  const navigation = useNavigation<NavigationProp<Nt>>();
 
   const selectedBackgroundColor = useThemeColor(
     { light: lightColor, dark: darkColor },
     "tint"
   );
-  const tabBorder = useThemeColor(
+  const textColor = useThemeColor(
     { light: lightColor, dark: darkColor },
     "text"
   );
-  const selectedTextColor = useThemeColor(
-    { light: lightColor, dark: darkColor },
-    "secondryText"
-  );
-  const selectedTab2 = useThemeColor(
-    { light: lightColor, dark: darkColor },
-    "selectedTab2"
-  );
-  const IconSize = 52;
+  const iconSize = 52;
   const IconColor = useThemeColor(
     { light: lightColor, dark: darkColor },
     "text"
   );
-  const sports = [
-    {
-      sportId: 1,
-      en: "Football",
-      ar: "كرة القدم",
-      icon: (color: string | undefined) => (
-        <IconFootball width={IconSize} height={IconSize} fill={color} />
-      ),
-    },
-    {
-      sportId: 2,
-      en: "Basketball",
-      ar: "كرة السلة",
-      icon: (color: string | undefined) => (
-        <IconBasketball width={IconSize} height={IconSize} fill={color} />
-      ),
-    },
-    {
-      sportId: 3,
-      en: "Swimming",
-      ar: "السباحة",
-      icon: (color: string | undefined) => (
-        <IconSwimming width={IconSize} height={IconSize} fill={color} />
-      ),
-    },
-    {
-      sportId: 4,
-      en: "Tennis",
-      ar: "التنس الأرضي",
-      icon: (color: string | undefined) => (
-        <IconTennis width={IconSize} height={IconSize} fill={color} />
-      ),
-    },
-    {
-      sportId: 5,
-      en: "Volleyball",
-      ar: "كرة الطائرة",
-      icon: (color: string | undefined) => (
-        <IconVolleyball width={IconSize} height={IconSize} fill={color} />
-      ),
-    },
-  ];
+  const sportsPlaceholder: Sport = {
+    sportId: 404,
+    en: "Football",
+    ar: "Loading",
+  };
+  const [sportsData, setSportsData] = useState<Sport[]>([]);
+  const [loadingSports, setLoadingSports] = useState(true);
+
+  // sport fetching
+  useEffect(() => {
+    const controller = new AbortController();
+
+    fetch("https://sqljosports.vercel.app/api/library/sports", {
+      signal: controller.signal,
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        return response.json();
+      })
+      .then((data) => {
+        const formattedData = data.map(
+          (
+            sport: { sportNameEn: string; sportNameAr: string },
+            index: number
+          ) => ({
+            sportId: index,
+            en: sport.sportNameEn.trim(),
+            ar: sport.sportNameAr.trim(),
+          })
+        );
+        console.log(formattedData);
+        setSportsData(formattedData);
+        return formattedData; // Return formattedData to the next then
+      })
+      .then((formattedData) => {
+        if (formattedData.length > 0) {
+          setSelectedSport(formattedData[0]); // Set the first sport as the selected sport
+        }
+      })
+      .catch((error) => {
+        if (error.name === "AbortError") {
+          console.log("Fetch aborted");
+        } else {
+          console.error("Error fetching sports data:", error);
+        }
+      })
+      .finally(() => {
+        setLoadingSports(false);
+      });
+
+    // Cleanup function to abort fetch on unmount
+    return () => {
+      controller.abort();
+    };
+  }, []);
+
+  const getIconComponent = (sportName: string, color: string | undefined) => {
+    const IconComponent = (Icons as any)[`Icon${sportName}`]; // Access icon dynamically
+    return IconComponent ? (
+      <IconComponent width={iconSize} height={iconSize} fill={color} />
+    ) : null;
+  };
   // State to track the selected sport and its name
-  const [selectedSport, setSelectedSport] = useState(sports[0]);
+  const [selectedSport, setSelectedSport] = useState(sportsPlaceholder);
   const [selectedOption, setSelectedOption] =
     useState<ComponentOptions>("Teams");
   const [playerId, setPlayerId] = useState<string>("");
 
-  useEffect(() => {
-    // Reset selected sport and option when language changes
-    setSelectedSport(sports[0]);
-    setSelectedOption("Teams");
-  }, [language]);
-
+  // back handler
   useEffect(() => {
     // Handle back button press
     const backAction = () => {
@@ -122,9 +150,148 @@ export default function SportsTab({ lightColor, darkColor }: ThemedViewProps) {
     );
 
     return () => backHandler.remove(); // Clean up the event listener
-  }, [playerId]); // Depend on playerId to know when to handle back
+  }, [playerId]);
 
-  // Function to render the appropriate component based on selectedOption
+  //  selected component rendering
+  const [teamsData, setTeamsData] = useState<Team[]>([]);
+  const [playersData, setPlayersData] = useState<Player[]>([]);
+  const [selectedTeam, setSelectedTeam] = useState<Team | null>(null);
+  const [selectedPlayer, setSelectedPlayer] = useState<Player | null>(null);
+  const [loadingFetch, setLoadingFetch] = useState(true);
+
+  useEffect(() => {
+    if (selectedSport && selectedOption == "Teams" && loadingSports == false) {
+      const controller = new AbortController();
+      setLoadingFetch(false);
+
+      fetch(
+        `https://sqljosports.vercel.app/api/library/teams?sportNameEn=${selectedSport.en}`,
+        {
+          signal: controller.signal,
+        }
+      )
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error("Network response was not ok");
+          }
+          return response.json();
+        })
+        .then((data) => {
+          const formattedTeams = data.map(
+            (
+              team: {
+                teamId: string;
+                teamNameEn: string;
+                teamNameAr: string;
+              },
+              index: any
+            ) => ({
+              teamId: team.teamId, // Adjust based on your actual data structure
+              en: team.teamNameEn.trim(),
+              ar: team.teamNameAr.trim(),
+            })
+          );
+          console.log("formattedTeams");
+          console.log(formattedTeams);
+          setTeamsData(formattedTeams);
+          setLoadingFetch(true);
+          if (formattedTeams.length > 0) {
+            setSelectedTeam(formattedTeams[0]); // Select the first team by default
+          }
+        })
+        .catch((error) => {
+          console.error("Error fetching teams data:", error);
+        });
+
+      return () => {
+        controller.abort(); // Cleanup
+      };
+    }
+  }, [selectedOption, selectedSport, loadingSports]);
+
+  useEffect(() => {
+    if (selectedTeam && selectedOption == "Players" && loadingSports == false) {
+      const controller = new AbortController();
+      setLoadingFetch(false);
+      fetch(
+        `https://sqljosports.vercel.app/api/library/players?teamNameEn=${selectedTeam.en}&sportNameEn=${selectedSport.en}`,
+        {
+          signal: controller.signal,
+        }
+      )
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error("Network response was not ok");
+          }
+          return response.json();
+        })
+        .then((data) => {
+          const formattedPlayers = data.map(
+            (
+              player: { playerNameEn: string; playerNameAr: string },
+              index: number
+            ) => ({
+              playerId: index, // Adjust based on your actual data structure
+              en: player.playerNameEn.trim(),
+              ar: player.playerNameAr.trim(),
+            })
+          );
+          console.log("formattedPlayers");
+          console.log(formattedPlayers);
+          setPlayersData(formattedPlayers);
+          setLoadingFetch(true);
+        })
+        .catch((error) => {
+          console.error("Error fetching players data:", error);
+        });
+
+      return () => {
+        controller.abort(); // Cleanup
+      };
+    }
+  }, [selectedOption, selectedSport, loadingSports]);
+
+  const renderTeamItem = ({ item }: { item: Team }) => (
+    <Pressable
+      style={{
+        flex: 1,
+        marginHorizontal: 4,
+        borderWidth: 1,
+        borderRadius: 4,
+        borderColor: textColor,
+        paddingVertical: 8,
+        marginVertical: 8,
+        alignItems: "center", // Center the content
+      }}
+      onPress={() => {
+        navigation.navigate("TeamDetails", item);
+      }}
+    >
+      <Image
+        source={require("../../assets/images/react-logo.png")}
+        style={{ width: 56, height: 56, marginBottom: 4 }}
+      />
+      <Text style={{ fontSize: 16 }}>{item.en}</Text>
+    </Pressable>
+  );
+  const renderPlayerItem = ({ item }: { item: Player }) => (
+    <Pressable
+      style={{
+        flex: 1,
+        marginHorizontal: 4,
+        borderWidth: 1,
+        borderRadius: 4,
+        borderColor: textColor,
+        paddingVertical: 8,
+        marginVertical: 8,
+        alignItems: "center", // Center the content
+      }}
+      onPress={() => setSelectedPlayer(item)}
+    >
+      <Text style={{ fontSize: 16 }}>{item.en}</Text>
+    </Pressable>
+  );
+
   const renderSelectedComponent = () => {
     const combinedKey = `${selectedSport.en}${selectedOption}`;
     const Component = LoadLibraryComponent(combinedKey);
@@ -132,51 +299,22 @@ export default function SportsTab({ lightColor, darkColor }: ThemedViewProps) {
     switch (selectedOption) {
       case "Players":
         return (
-          <Suspense
-            fallback={
+          <View style={{ flex: 1 }}>
+            {teamsData.length > 0 && loadingFetch ? (
+              <FlatList
+                data={playersData}
+                renderItem={renderPlayerItem}
+                keyExtractor={(item) => item.playerId.toString()}
+                contentContainerStyle={{ padding: 16 }}
+                numColumns={2}
+              />
+            ) : (
               <View style={styles.loadingContainer}>
                 <ActivityIndicator size="large" />
                 <Text style={styles.loadingText}>Loading...</Text>
               </View>
-            }
-          >
-            <View>
-              {playerId === "" && selectedOption === "Players" ? (
-                <>
-                  <Text style={{ fontSize: 18, margin: 10 }}>
-                    Select Player
-                  </Text>
-
-                  <Pressable
-                    onPress={() => setPlayerId("1")}
-                    style={styles.playerButton}
-                  >
-                    <Text style={{ fontSize: 16 }}>Player 1</Text>
-                  </Pressable>
-
-                  <Pressable
-                    onPress={() => setPlayerId("2")}
-                    style={styles.playerButton}
-                  >
-                    <Text style={{ fontSize: 16 }}>Player 2</Text>
-                  </Pressable>
-                </>
-              ) : (
-                <View style={{ position: "relative" }}>
-                  <Button
-                    title={language === "en" ? "Back" : "رجوع"}
-                    onPress={() => setPlayerId("")}
-                    style={styles.backButton}
-                  />
-                  <Component
-                    key={playerId}
-                    sport={selectedSport.en}
-                    playerId={playerId}
-                  />
-                </View>
-              )}
-            </View>
-          </Suspense>
+            )}
+          </View>
         );
       case "Rules":
         return (
@@ -193,21 +331,30 @@ export default function SportsTab({ lightColor, darkColor }: ThemedViewProps) {
         );
       case "Teams":
         return (
-          <Suspense
-            fallback={
+          <View style={{ flex: 1 }}>
+            {teamsData.length > 0 && loadingFetch ? (
+              <FlatList
+                data={teamsData}
+                renderItem={renderTeamItem}
+                keyExtractor={(item) => item.teamId.toString()}
+                contentContainerStyle={{ padding: 16 }}
+                numColumns={2}
+              />
+            ) : (
               <View style={styles.loadingContainer}>
                 <ActivityIndicator size="large" />
                 <Text style={styles.loadingText}>Loading...</Text>
               </View>
-            }
-          >
-            <Component sport={selectedSport.en} playerId={playerId} />
-          </Suspense>
+            )}
+          </View>
         );
+
       default:
         throw new Error("Unknown component type");
     }
   };
+
+  // scroll to X
   useEffect(() => {
     const isArabic = I18nManager.isRTL;
     if (isArabic) {
@@ -217,13 +364,39 @@ export default function SportsTab({ lightColor, darkColor }: ThemedViewProps) {
       console.log("english");
     }
   }, [language]);
+  const scrollViewRef = useRef<ScrollView>(null);
+  const isFocused = useIsFocused();
+  useEffect(() => {
+    if (horizontal) {
+      const timer = setTimeout(() => {
+        const itemWidth = 110;
+        const scrollToX = selectedSport.sportId * itemWidth;
+        const lenght = (sportsData.length - 1) * itemWidth - 300;
+        const scrollToXar = lenght - scrollToX;
+        if (scrollViewRef.current) {
+          scrollViewRef.current.scrollTo({
+            x: language === "ar" ? scrollToXar : scrollToX,
+          });
+        }
+      }, 10);
+      return () => clearTimeout(timer);
+    }
+  }, [isFocused, selectedSport]); // Runs when selectedSport changes
+
+  if (loadingSports) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" />
+        <Text style={styles.loadingText}>Loading sports data...</Text>
+      </View>
+    );
+  }
   return (
     <View style={styles.container}>
-      <View>{isRTL ? <Text>RTl</Text> : <Text>ltr</Text>}</View>
-      {/* Header Bar for Sports */}
       <View style={[styles.headerBar, horizontal ? {} : styles.fullScreen]}>
         {horizontal ? (
           <ScrollView
+            ref={scrollViewRef}
             horizontal
             showsHorizontalScrollIndicator={false}
             contentContainerStyle={{
@@ -231,18 +404,18 @@ export default function SportsTab({ lightColor, darkColor }: ThemedViewProps) {
               alignItems: "flex-start",
             }}
           >
-            {sports.map((sport) => (
+            {sportsData?.map((sport) => (
               <Pressable
                 key={sport.sportId}
-                onPress={() => {
-                  setSelectedSport(sport);
-                  setHorizontal(true);
-                }}
+                onPress={() => setSelectedSport(sport)}
               >
                 <View style={{ alignItems: "center" }}>
-                  {sport.sportId === selectedSport.sportId
-                    ? sport.icon(selectedBackgroundColor)
-                    : sport.icon(IconColor)}
+                  {getIconComponent(
+                    sport.en,
+                    sport.sportId === selectedSport.sportId
+                      ? selectedBackgroundColor
+                      : IconColor
+                  )}
                   <Text
                     style={[
                       {
@@ -252,7 +425,7 @@ export default function SportsTab({ lightColor, darkColor }: ThemedViewProps) {
                         marginHorizontal: 5,
                         alignSelf: "flex-start",
                       },
-                      selectedSport.sportId === sport.sportId && {
+                      sport.sportId === selectedSport.sportId && {
                         color: selectedBackgroundColor,
                         fontWeight: "bold",
                       },
@@ -267,12 +440,12 @@ export default function SportsTab({ lightColor, darkColor }: ThemedViewProps) {
         ) : (
           <View
             style={{
-              flexDirection: "row",
+              flexDirection: language === "en" ? "row" : "row-reverse",
               flexWrap: "wrap",
               justifyContent: "center",
             }}
           >
-            {sports.map((sport) => (
+            {sportsData.map((sport) => (
               <Pressable
                 key={sport.sportId}
                 onPress={() => {
@@ -281,9 +454,12 @@ export default function SportsTab({ lightColor, darkColor }: ThemedViewProps) {
                 }}
                 style={{ width: "33%", alignItems: "center", padding: 5 }} // Adjust the width for grid
               >
-                {sport.sportId === selectedSport.sportId
-                  ? sport.icon(selectedBackgroundColor)
-                  : sport.icon(IconColor)}
+                {getIconComponent(
+                  sport.en,
+                  sport.sportId === selectedSport.sportId
+                    ? selectedBackgroundColor
+                    : IconColor
+                )}
                 <Text
                   style={[
                     {
@@ -302,6 +478,7 @@ export default function SportsTab({ lightColor, darkColor }: ThemedViewProps) {
             ))}
           </View>
         )}
+
         <View style={{ marginHorizontal: 32, margin: 4 }}>
           <Pressable onPress={() => setHorizontal(!horizontal)}>
             <Text>
@@ -333,11 +510,11 @@ export default function SportsTab({ lightColor, darkColor }: ThemedViewProps) {
                   borderRadius: 20,
                   marginHorizontal: 5,
                   borderWidth: 1,
-                  borderColor: tabBorder,
+                  borderColor: textColor,
                 },
                 selectedOption === option && {
-                  color: selectedTextColor,
-                  backgroundColor: selectedBackgroundColor,
+                  color: selectedBackgroundColor,
+
                   fontWeight: "bold",
                   borderColor: selectedBackgroundColor,
                 },
@@ -375,16 +552,11 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
+    textAlign: "center",
   },
   loadingText: {
     marginTop: 10,
     fontSize: 16,
-  },
-  playerButton: {
-    padding: 10,
-    marginHorizontal: 10,
-    borderRadius: 5,
-    marginBottom: 5,
   },
   backButton: {
     position: "absolute",

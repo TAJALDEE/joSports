@@ -1,8 +1,9 @@
 import React, { useState } from "react";
-import { Button, StyleSheet } from "react-native";
-import { ThemedView as View } from "./ThemedView";
+import { Button, StyleSheet, View } from "react-native";
+import { ThemedView } from "./ThemedView";
 import { useTheme } from "@/context/ThemeContext";
 import { useThemeColor } from "@/hooks/useThemeColor";
+import { useLanguage } from "@/context/LanguageContext";
 
 type ColorProps = {
   lightColor?: string;
@@ -11,42 +12,47 @@ type ColorProps = {
 
 const ThemeToggleButton = ({ lightColor, darkColor }: ColorProps) => {
   const { theme, setTheme } = useTheme();
-  const [isDefault, setIsDefault] = useState<boolean>(true);
+  const [isManual, setIsManual] = useState<boolean>(true);
   const tint = useThemeColor({ light: lightColor, dark: darkColor }, "tint");
+  const { language, toggleLanguage } = useLanguage();
 
   return (
     <View style={styles.container}>
       <View style={styles.buttonContainer}>
         <View style={{ flex: 1, marginRight: 4 }}>
           <Button
-            title="Light"
+            title={language == "en" ? "Light" : "فاتح"}
             onPress={() => {
               setTheme("light");
-              setIsDefault(false);
+              setIsManual(true);
             }}
-            color={theme === "light" ? "#4CAF50" : "gray"}
+            color={theme === "light" && isManual ? "#4CAF50" : "gray"}
           />
         </View>
         <View style={{ flex: 1, marginLeft: 4 }}>
           <Button
-            title="Dark"
+            title={language == "en" ? "Dark" : "داكن"}
             onPress={() => {
               setTheme("dark");
-              setIsDefault(false);
+              setIsManual(true);
             }}
-            color={theme === "dark" ? "#FF6A00" : "gray"}
+            color={theme === "dark" && isManual ? "#FF6A00" : "gray"}
           />
         </View>
       </View>
 
       <View style={{ flex: 1, marginVertical: 8 }}>
         <Button
-          title="Device default"
+          title={
+            language == "en"
+              ? "Auto: Decice settings"
+              : "تلقائي: اعدادات الجهاز"
+          }
           onPress={() => {
             setTheme("default");
-            setIsDefault(true);
+            setIsManual(false);
           }}
-          color={isDefault ? tint : "gray"}
+          color={isManual != true ? tint : "gray"}
         />
       </View>
     </View>

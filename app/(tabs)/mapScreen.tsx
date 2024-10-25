@@ -1,16 +1,23 @@
-import React from "react";
-import { View, Button } from "react-native";
-import { useMap } from "@/context/MapContext"; // Adjust the import path as needed
+import React, { Suspense } from "react";
+import { View, Text, Button, ActivityIndicator } from "react-native";
+//import { useMap } from "@/context/MapContext"; // Adjust the import path as needed
 import Map from "../map"; // Adjust the import path as needed
-import NotFoundScreen from "../+not-found"; // Adjust the import path as needed
-import Login from "../login";
 
 const MapScreen: React.FC = () => {
-  const { currentMap, toggleMap } = useMap(); // Use the context
+  //const { currentMap, toggleMap } = useMap(); // Use the context   {currentMap === "Map" ? <Map /> : <Login />}
 
   return (
     <View style={{ flex: 1 }}>
-      {currentMap === "Map" ? <Map /> : <Login />}
+      <Suspense
+        fallback={
+          <View style={{ flex: 1 }}>
+            <ActivityIndicator size={"large"} />
+            <Text>Loading</Text>
+          </View>
+        }
+      >
+        <Map />
+      </Suspense>
     </View>
   );
 };

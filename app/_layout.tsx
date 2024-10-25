@@ -83,6 +83,8 @@ const MainStack = () => {
         <Stack.Screen name="addNews" />
         <Stack.Screen name="newsDetail" />
         <Stack.Screen name="login" />
+        <Stack.Screen name="newsNotification" />
+        <Stack.Screen name="TeamDetails" />
         <Stack.Screen name="signup" options={{ title: "Create New Account" }} />
       </Stack>
     </NavigationThemeProvider>
