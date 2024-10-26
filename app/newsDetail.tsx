@@ -12,11 +12,11 @@ import ImageView from "react-native-image-viewing";
 
 export default function NewsDetail() {
   const route = useRoute();
-  const { title, images, description, sportid } = route.params as {
+  const { title, images, description, sportId } = route.params as {
     title: string;
     images: string[];
     description: string;
-    sportid: string;
+    sportId: string;
   };
 
   const [visible, setIsVisible] = useState(false);

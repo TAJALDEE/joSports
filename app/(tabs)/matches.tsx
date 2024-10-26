@@ -5,7 +5,7 @@ import { ThemedViewProps, ThemedView } from "@/components/ThemedView";
 import { useThemeColor } from "@/hooks/useThemeColor";
 
 interface match {
-  id: string;
+  matchId: string;
   teamA: string;
   teamB: string;
   score: string;
@@ -16,7 +16,7 @@ interface match {
 
 const matchData = [
   {
-    id: "1",
+    matchId: "1",
     teamA: "Team A",
     teamB: "Team B",
     score: "2 - 1",
@@ -25,7 +25,7 @@ const matchData = [
     place: "Stadium A",
   },
   {
-    id: "2",
+    matchId: "2",
     teamA: "Team C",
     teamB: "Team D",
     score: "0 - 3",
@@ -34,7 +34,7 @@ const matchData = [
     place: "Stadium B",
   },
   {
-    id: "3",
+    matchId: "3",
     teamA: "Team E",
     teamB: "Team F",
     score: "1 - 1",
@@ -84,7 +84,7 @@ const MatchResults = ({ lightColor, darkColor }: ThemedViewProps) => {
       <FlatList
         data={matchData}
         renderItem={renderMatchItem}
-        keyExtractor={(item) => item.id}
+        keyExtractor={(item) => item.matchId}
         contentContainerStyle={styles.container}
       />
     </ThemedView>

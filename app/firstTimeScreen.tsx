@@ -3,6 +3,7 @@ import { StyleSheet } from "react-native";
 import { ThemedText as Text } from "@/components/ThemedText";
 import { ThemedView as View } from "@/components/ThemedView";
 import { ThemedButton as Button } from "@/components/ThemedButton";
+import { ThemedButtonSecondry } from "@/components/ThemedButtonSecondry";
 import { useLanguage } from "@/context/LanguageContext";
 import { useNavigation, NavigationProp } from "@react-navigation/native";
 
@@ -56,29 +57,34 @@ const FirstTimeScreen = () => {
           <View style={styles.stepContainer}>
             <Text style={styles.title}>
               {language === "en"
-                ? "Discover amazing features"
-                : "استكشف ميزات رائعة"}
+                ? "Stay updated with News and Matches from Over 30 Sports"
+                : "ابقَ على اطلاع بأخبار ومباريات أكثر من 30 رياضة "}
             </Text>
           </View>
         );
+
       case 2:
         return (
           <View style={styles.stepContainer}>
             <Text style={styles.title}>
               {language === "en"
-                ? "Stay connected with friends"
-                : "ابقَ متصلاً بالأصدقاء"}
+                ? "Get to know Jordanian Champions and Achievements"
+                : "تعرف على أبطال الأردنين وإنجازاتهم"}
             </Text>
           </View>
         );
+
       case 3:
         return (
           <View style={styles.stepContainer}>
             <Text style={styles.title}>
-              {language === "en" ? "Join us today!" : "انضم إلينا اليوم!"}
+              {language === "en"
+                ? "Book tickets and watch matches live in the stadiums"
+                : "قم بحجز التذاكر وشاهد المباريات في الملاعب"}
             </Text>
           </View>
         );
+
       default:
         return null;
     }
@@ -91,7 +97,7 @@ const FirstTimeScreen = () => {
       <View style={styles.navigation}>
         {/* Render the Go Back button only if not on the first step */}
         {!isFirstStep && (
-          <Button
+          <ThemedButtonSecondry
             title={language === "en" ? "Go Back" : "العودة"}
             onPress={handleBack}
           />
@@ -116,7 +122,7 @@ const FirstTimeScreen = () => {
 const styles = StyleSheet.create({
   stepContainer: {
     flex: 1,
-    padding: 20,
+    padding: 16,
     justifyContent: "center",
     alignItems: "center",
   },
@@ -124,6 +130,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
     fontSize: 24,
     padding: 8,
+    lineHeight: 28,
   },
   navigation: {
     position: "absolute",

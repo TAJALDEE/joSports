@@ -7,6 +7,7 @@ import {
   ThemedViewProps,
 } from "@/components/ThemedView";
 import { useThemeColor } from "@/hooks/useThemeColor";
+import { useLanguage } from "@/context/LanguageContext";
 
 interface Team {
   teamId: number;
@@ -33,6 +34,7 @@ export default function TeamDetails({
   lightColor,
   darkColor,
 }: ThemedViewProps) {
+  const { language } = useLanguage();
   const selectedBackgroundColor = useThemeColor(
     { light: lightColor, dark: darkColor },
     "background2"
@@ -75,7 +77,9 @@ export default function TeamDetails({
     <Pressable
       style={[styles.playerCard, { backgroundColor: selectedBackgroundColor }]}
     >
-      <Text style={styles.playerName}>{item.playerNameEn}</Text>
+      <Text style={styles.playerName}>
+        {language == "en" ? item.playerNameEn : item.playerNameAr}
+      </Text>
       <Text style={styles.playerDetails}>{item.details}</Text>
     </Pressable>
   );
@@ -84,7 +88,9 @@ export default function TeamDetails({
     <ThemedView style={styles.container}>
       {team && (
         <View style={styles.teamInfo}>
-          <Text style={styles.title}>{team.teamNameEn}</Text>
+          <Text style={styles.title}>
+            {language == "en" ? team.teamNameEn : team.teamNameAr}
+          </Text>
           <Text style={styles.details}>{team.details}</Text>
         </View>
       )}
@@ -108,11 +114,12 @@ const styles = StyleSheet.create({
     paddingBottom: 10,
     borderBottomWidth: 1,
     borderBottomColor: "#ccc",
+    marginTop: 16,
   },
   title: {
     fontSize: 24,
     fontWeight: "bold",
-    marginBottom: 8,
+    paddingVertical: 8,
   },
   details: {
     fontSize: 16,

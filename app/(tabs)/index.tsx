@@ -11,17 +11,8 @@ import { ThemedView as View } from "@/components/ThemedView";
 import { ThemedButton } from "@/components/ThemedButton";
 import { useNavigation, NavigationProp } from "@react-navigation/native";
 
-interface ItemType {
-  id: string;
-  title: string;
-  description: string;
-  images: string[]; // Ensure this is always an array of strings
-  sportId: string;
-  date: string;
-}
-
 interface NewsCardProps {
-  item: ItemType;
+  item: NewsDetailParams;
 }
 
 type NewsDetailParams = {
@@ -29,17 +20,28 @@ type NewsDetailParams = {
   title: string;
   description: string;
   images: string[]; // This should be an array
-  sportid: string;
+  sportId: string;
   date: string;
+  matchId: string | null;
 };
+
+interface match {
+  matchId: string;
+  teamA: string;
+  teamB: string;
+  score: string;
+  date: string;
+  time: string;
+  place: string;
+}
 
 type RootStackParamList = {
   newsDetail: NewsDetailParams;
-  buyTickets: { matchId: string; matchTitle: string };
+  tickets: NewsDetailParams;
 };
 
 export default function News() {
-  const [newsData, setNewsData] = useState<ItemType[]>([]);
+  const [newsData, setNewsData] = useState<NewsDetailParams[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
@@ -53,7 +55,7 @@ export default function News() {
         if (!response.ok) {
           throw new Error("Network response was not ok");
         }
-        const data: ItemType[] = await response.json();
+        const data: NewsDetailParams[] = await response.json();
 
         // Parse images properly
         const parsedData = data.map((item) => ({
@@ -111,19 +113,37 @@ export default function News() {
             >
               {item.description}
             </Text>
-            <ThemedButton
-              title="View More"
-              onPress={() =>
-                navigation.navigate("newsDetail", {
-                  id: item.id,
-                  title: item.title,
-                  description: item.description,
-                  images: images, // This should be an array of strings
-                  sportid: item.sportId,
-                  date: item.date,
-                })
-              }
-            />
+            {item.matchId != null ? (
+              <ThemedButton
+                title="Buy a Ticket"
+                onPress={() =>
+                  navigation.navigate("tickets", {
+                    id: item.id,
+                    title: item.title,
+                    description: item.description,
+                    images: images,
+                    sportId: item.sportId,
+                    date: item.date,
+                    matchId: item.matchId,
+                  })
+                }
+              />
+            ) : (
+              <ThemedButton
+                title="View More"
+                onPress={() =>
+                  navigation.navigate("newsDetail", {
+                    id: item.id,
+                    title: item.title,
+                    description: item.description,
+                    images: images, // This should be an array of strings
+                    sportId: item.sportId,
+                    date: item.date,
+                    matchId: item.matchId,
+                  })
+                }
+              />
+            )}
           </View>
         </Pressable>
         <View style={styles.line} />
@@ -131,7 +151,9 @@ export default function News() {
     );
   };
 
-  const renderItem = ({ item }: { item: ItemType }) => <NewsCard item={item} />;
+  const renderItem = ({ item }: { item: NewsDetailParams }) => (
+    <NewsCard item={item} />
+  );
 
   if (loading) {
     return <Text>Loading...</Text>;

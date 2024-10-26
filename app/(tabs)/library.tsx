@@ -271,7 +271,9 @@ export default function SportsTab({ lightColor, darkColor }: ThemedViewProps) {
         source={require("../../assets/images/react-logo.png")}
         style={{ width: 56, height: 56, marginBottom: 4 }}
       />
-      <Text style={{ fontSize: 16 }}>{item.en}</Text>
+      <Text style={{ fontSize: 16 }}>
+        {language == "en" ? item.en : item.ar}
+      </Text>
     </Pressable>
   );
   const renderPlayerItem = ({ item }: { item: Player }) => (
@@ -288,7 +290,9 @@ export default function SportsTab({ lightColor, darkColor }: ThemedViewProps) {
       }}
       onPress={() => setSelectedPlayer(item)}
     >
-      <Text style={{ fontSize: 16 }}>{item.en}</Text>
+      <Text style={{ fontSize: 16 }}>
+        {language == "en" ? item.en : item.ar}
+      </Text>
     </Pressable>
   );
 
