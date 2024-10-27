@@ -59,13 +59,9 @@ export default function TabLayout({ lightColor, darkColor }: ColorProps) {
       <Tabs.Screen
         name="mapScreen"
         options={{
-          title: "Map",
+          title: `${language === "en" ? "Sport Fields" : "الملاعب الرياضية"}`,
           headerTitleAlign: "center",
-          headerTitleStyle: {
-            color: "black",
-          },
           headerStyle: {
-            backgroundColor: "#A0A0A0",
             elevation: 0,
           },
           //headerLeft: () => <Button title="Toggle Map" onPress={toggleMap} />,

@@ -1,5 +1,5 @@
 const tintColorLight = "#4CAF50"; // Updated primary color for light theme
-const tintColorDark = "#FF6A00"; // Updated primary color for dark theme
+const tintColorDark = "#CE1126"; // Updated primary color for dark theme
 
 export const Colors = {
   light: {

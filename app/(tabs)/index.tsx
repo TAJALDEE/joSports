@@ -25,16 +25,6 @@ type NewsDetailParams = {
   matchId: string | null;
 };
 
-interface match {
-  matchId: string;
-  teamA: string;
-  teamB: string;
-  score: string;
-  date: string;
-  time: string;
-  place: string;
-}
-
 type RootStackParamList = {
   newsDetail: NewsDetailParams;
   tickets: NewsDetailParams;

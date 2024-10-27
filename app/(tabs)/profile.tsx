@@ -54,6 +54,7 @@ const ProfilePage = ({ lightColor, darkColor }: ColorProps) => {
             {language === "en" ? "guest" : "زائر"}
           </Text>
         </RNView>
+        <RNView style={styles.line} />
         <Text style={{ fontSize: 24, paddingVertical: 5, textAlign: "center" }}>
           {language == "en" ? "My account" : "حسابي"}
         </Text>
@@ -70,12 +71,12 @@ const ProfilePage = ({ lightColor, darkColor }: ColorProps) => {
         >
           {language === "en" ? "signup" : "انشاء حساب"}
         </Link>
-        <Link
+        {/* <Link
           href={"/profile"}
           style={{ color: IconColor, paddingVertical: 12, fontSize: 16 }}
         >
           {language === "en" ? "My info as guest" : "معلوماتي كزائر"}
-        </Link>
+        </Link> */}
         <RNView style={styles.line} />
         <Text style={{ fontSize: 24, paddingVertical: 5, textAlign: "center" }}>
           {language === "en" ? "notification" : "اشعارات"}

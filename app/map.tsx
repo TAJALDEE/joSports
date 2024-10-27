@@ -12,6 +12,7 @@ import { ThemedView as View } from "@/components/ThemedView";
 import { SelectList } from "react-native-dropdown-select-list";
 import { useLanguage } from "@/context/LanguageContext";
 import { WebView } from "react-native-webview";
+import { useTheme } from "@/context/ThemeContext";
 
 interface Location {
   sportId: string;
@@ -130,6 +131,7 @@ export default function Map() {
   const drawerAnimation = useState(new Animated.Value(-300))[0];
   const [selectedSport, setSelectedSport] = useState("Football");
   const { language, toggleLanguage } = useLanguage();
+  const { theme, setTheme } = useTheme();
 
   const initialRegion = {
     latitude: 30.5852,
@@ -162,12 +164,13 @@ export default function Map() {
       }).start();
     }
   };
-
   return (
     <View style={styles.container}>
       <View style={styles.mapContainer}>
         <WebView
-          source={{ uri: "https://sportmapview.vercel.app/" }}
+          source={{
+            uri: `https://sportmapview.vercel.app/?theme=${theme}&lang=${language}`,
+          }}
           javaScriptEnabled={true}
           style={{ flex: 1 }}
           isFileUploadSupported={true}

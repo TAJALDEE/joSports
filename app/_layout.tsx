@@ -12,7 +12,6 @@ import { useEffect } from "react";
 import "react-native-reanimated";
 import { LanguageProvider } from "@/context/LanguageContext";
 import { ThemeProvider, useTheme } from "@/context/ThemeContext";
-import ThemeToggleButton from "../components/ThemeToggleButton";
 import { MapProvider } from "@/context/MapContext";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.

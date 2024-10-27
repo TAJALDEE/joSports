@@ -36,7 +36,7 @@ const ThemeToggleButton = ({ lightColor, darkColor }: ColorProps) => {
               setTheme("dark");
               setIsManual(true);
             }}
-            color={theme === "dark" && isManual ? "#FF6A00" : "gray"}
+            color={theme === "dark" && isManual ? "#CE1126" : "gray"}
           />
         </View>
       </View>
