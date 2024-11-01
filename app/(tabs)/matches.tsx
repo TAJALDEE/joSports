@@ -53,6 +53,8 @@ const MatchResults = ({ lightColor, darkColor }: ThemedViewProps) => {
   const renderMatchItem = ({ item }: { item: match }) => (
     <ThemedView
       style={[styles.card, { backgroundColor: selectedBackgroundColor }]}
+      accessible={true}
+      accessibilityLabel={`a match between ${item.teamA} and ${item.teamB} on ${item.date} in ${item.place} ended up ain a score of ${item.score}`}
     >
       <Text style={styles.date}>
         {item.date} {item.time}

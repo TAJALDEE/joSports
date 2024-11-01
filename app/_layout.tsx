@@ -10,7 +10,7 @@ import { Stack, useNavigation } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
 import "react-native-reanimated";
-import { LanguageProvider } from "@/context/LanguageContext";
+import { LanguageProvider, useLanguage } from "@/context/LanguageContext";
 import { ThemeProvider, useTheme } from "@/context/ThemeContext";
 import { MapProvider } from "@/context/MapContext";
 
@@ -21,15 +21,6 @@ export default function RootLayout() {
   const [loaded] = useFonts({
     SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
   });
-  useEffect(() => {
-    const isArabic = I18nManager.isRTL;
-    if (isArabic) {
-      I18nManager.allowRTL(false); // Force right-to-left layout
-      console.log("arabic");
-    } else {
-      console.log("english");
-    }
-  }, []);
   useEffect(() => {
     if (loaded) {
       SplashScreen.hideAsync();
@@ -57,6 +48,7 @@ type FirstTimeNavigation = {
 const MainStack = () => {
   const { theme } = useTheme();
   const navigation = useNavigation<NavigationProp<FirstTimeNavigation>>();
+  const { language, toggleLanguage } = useLanguage();
   useEffect(() => {
     if (navigation) {
       navigation.navigate("firstTimeScreen", null);
@@ -65,8 +57,11 @@ const MainStack = () => {
   useEffect(() => {
     const isArabic = I18nManager.isRTL;
     if (isArabic) {
-      I18nManager.allowRTL(false); // Force right-to-left layout
+      I18nManager.allowRTL(false);
       console.log("arabic");
+      if (language == "en") {
+        toggleLanguage();
+      }
     } else {
       console.log("english");
     }
@@ -82,7 +77,7 @@ const MainStack = () => {
         <Stack.Screen name="addNews" />
         <Stack.Screen name="newsDetail" />
         <Stack.Screen name="login" />
-        <Stack.Screen name="newsNotification" />
+        <Stack.Screen name="notification" />
         <Stack.Screen name="TeamDetails" />
         <Stack.Screen name="tickets" />
         <Stack.Screen name="signup" options={{ title: "Create New Account" }} />

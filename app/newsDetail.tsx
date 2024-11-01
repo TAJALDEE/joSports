@@ -8,16 +8,20 @@ import {
 import { ThemedText as Text } from "@/components/ThemedText";
 import { ThemedView as View } from "@/components/ThemedView";
 import { useRoute } from "@react-navigation/native";
-import ImageView from "react-native-image-viewing";
+import { useLanguage } from "@/context/LanguageContext";
 
 export default function NewsDetail() {
   const route = useRoute();
-  const { title, images, description, sportId } = route.params as {
-    title: string;
-    images: string[];
-    description: string;
-    sportId: string;
-  };
+  const { titleEn, titleAr, images, descriptionEn, descriptionAr, sportId } =
+    route.params as {
+      titleEn: string;
+      titleAr: string;
+      images: string[];
+      descriptionEn: string;
+      descriptionAr: string;
+      sportId: string;
+    };
+  const { language } = useLanguage();
 
   const [visible, setIsVisible] = useState(false);
   const [imageIndex, setImageIndex] = useState(0);
@@ -28,7 +32,7 @@ export default function NewsDetail() {
   return (
     <View style={styles.container}>
       <ScrollView>
-        <Text style={styles.title}>{title}</Text>
+        <Text style={styles.title}>{language == "en" ? titleEn : titleAr}</Text>
 
         {/* Render the images with a touchable area to open the ImageView */}
         <View style={styles.imageContainer}>
@@ -45,14 +49,9 @@ export default function NewsDetail() {
           ))}
         </View>
 
-        <ImageView
-          images={formattedImages}
-          imageIndex={imageIndex}
-          visible={visible}
-          onRequestClose={() => setIsVisible(false)}
-        />
-
-        <Text style={styles.description}>{description}</Text>
+        <Text style={styles.description}>
+          {language == "en" ? descriptionEn : descriptionAr}
+        </Text>
       </ScrollView>
     </View>
   );

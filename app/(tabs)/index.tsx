@@ -10,6 +10,7 @@ import { ThemedText as Text } from "@/components/ThemedText";
 import { ThemedView as View } from "@/components/ThemedView";
 import { ThemedButton } from "@/components/ThemedButton";
 import { useNavigation, NavigationProp } from "@react-navigation/native";
+import { useLanguage } from "@/context/LanguageContext";
 
 interface NewsCardProps {
   item: NewsDetailParams;
@@ -17,8 +18,10 @@ interface NewsCardProps {
 
 type NewsDetailParams = {
   id: string;
-  title: string;
-  description: string;
+  titleEn: string;
+  titleAr: string;
+  descriptionEn: string;
+  descriptionAr: string;
   images: string[]; // This should be an array
   sportId: string;
   date: string;
@@ -35,6 +38,7 @@ export default function News() {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
+  const { language } = useLanguage();
 
   useEffect(() => {
     const fetchNews = async () => {
@@ -76,10 +80,20 @@ export default function News() {
     const images = Array.isArray(item.images) ? item.images : []; // Ensure images is an array
 
     return (
-      <View style={styles.card}>
+      <View
+        style={styles.card}
+        accessibilityLabel={`News card for ${
+          language == "en" ? item.titleEn : item.titleAr
+        }`}
+      >
+        <View accessible={false}>
+          <Text>
+            {language === "en"
+              ? `Date: ${item.date.substring(0, 10)}`
+              : `تاريخ: ${item.date.substring(0, 10)}`}
+          </Text>
+        </View>
         <Pressable>
-          <Text>Date: {item.date.substring(0, 10)}</Text>
-
           {images.length === 1 ? (
             <Image source={{ uri: images[0] }} style={styles.singleImage} />
           ) : (
@@ -95,13 +109,15 @@ export default function News() {
           )}
 
           <View>
-            <Text style={styles.title}>{item.title}</Text>
+            <Text style={styles.title}>
+              {language == "en" ? item.titleEn : item.titleAr}
+            </Text>
             <Text
               numberOfLines={2}
               ellipsizeMode="tail"
               style={styles.description}
             >
-              {item.description}
+              {language === "en" ? item.descriptionEn : item.descriptionAr}
             </Text>
             {item.matchId != null ? (
               <ThemedButton
@@ -109,8 +125,10 @@ export default function News() {
                 onPress={() =>
                   navigation.navigate("tickets", {
                     id: item.id,
-                    title: item.title,
-                    description: item.description,
+                    titleEn: item.titleEn,
+                    titleAr: item.titleAr,
+                    descriptionEn: item.descriptionEn,
+                    descriptionAr: item.descriptionAr,
                     images: images,
                     sportId: item.sportId,
                     date: item.date,
@@ -124,9 +142,11 @@ export default function News() {
                 onPress={() =>
                   navigation.navigate("newsDetail", {
                     id: item.id,
-                    title: item.title,
-                    description: item.description,
-                    images: images, // This should be an array of strings
+                    titleEn: item.titleEn,
+                    titleAr: item.titleAr,
+                    descriptionEn: item.descriptionEn,
+                    descriptionAr: item.descriptionAr,
+                    images: images,
                     sportId: item.sportId,
                     date: item.date,
                     matchId: item.matchId,

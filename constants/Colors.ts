@@ -7,7 +7,7 @@ export const Colors = {
     text: "#333333", // Dark Charcoal for text
     secondryText: "#F5F5F5",
     background: "#F5F5F5", // Light Gray for background
-    background2: "#F5F5F5",
+    background2: "#FFFFFF",
     tint: tintColorLight,
     icon: "#687076", // Original icon color
     tabIconDefault: "#687076", // Original default tab icon color

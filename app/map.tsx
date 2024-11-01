@@ -164,7 +164,6 @@ export default function Map() {
       }).start();
     }
   };
-  console.log(language);
   return (
     <View style={styles.container}>
       <View style={styles.mapContainer}>

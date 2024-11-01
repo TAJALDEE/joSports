@@ -52,7 +52,7 @@ interface SubscribedSports {
   [key: string]: boolean;
 }
 
-export default function Example() {
+export default function notification() {
   const { language } = useLanguage();
   const [subscribedSports, setSubscribedSports] = useState<SubscribedSports>(
     sportsList.reduce((acc, sport) => {

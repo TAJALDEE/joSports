@@ -27,6 +27,36 @@ export default function TabLayout({ lightColor, darkColor }: ColorProps) {
       }}
     >
       <Tabs.Screen
+        name="library"
+        options={{
+          title: `${language === "en" ? "Library" : "المكتبة"}`,
+          headerTitleAlign: "center",
+          tabBarIcon: ({ color, focused }) => (
+            <TabBarIcon
+              name={focused ? "book" : "book-outline"}
+              color={color}
+            />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="mapScreen"
+        options={{
+          title: `${language === "en" ? "Sport Fields" : "الملاعب الرياضية"}`,
+          headerTitleAlign: "center",
+          headerStyle: {
+            elevation: 0,
+          },
+          //headerLeft: () => <Button title="Toggle Map" onPress={toggleMap} />,
+          tabBarIcon: ({ color, focused }) => (
+            <PathIcon
+              height={24} // Set the icon height
+              fill={color} // Set the icon color
+            />
+          ),
+        }}
+      />
+      <Tabs.Screen
         name="index"
         options={{
           title: `${language === "en" ? "News" : "اخبار"}`,
@@ -57,23 +87,6 @@ export default function TabLayout({ lightColor, darkColor }: ColorProps) {
         }}
       />
       <Tabs.Screen
-        name="mapScreen"
-        options={{
-          title: `${language === "en" ? "Sport Fields" : "الملاعب الرياضية"}`,
-          headerTitleAlign: "center",
-          headerStyle: {
-            elevation: 0,
-          },
-          //headerLeft: () => <Button title="Toggle Map" onPress={toggleMap} />,
-          tabBarIcon: ({ color, focused }) => (
-            <PathIcon
-              height={24} // Set the icon height
-              fill={color} // Set the icon color
-            />
-          ),
-        }}
-      />
-      <Tabs.Screen
         name="profile"
         options={{
           title: `${language === "en" ? "Profile" : "ملفي"}`,
@@ -81,19 +94,6 @@ export default function TabLayout({ lightColor, darkColor }: ColorProps) {
           tabBarIcon: ({ color, focused }) => (
             <TabBarIcon
               name={focused ? "person" : "person-outline"}
-              color={color}
-            />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="library"
-        options={{
-          title: `${language === "en" ? "Library" : "المكتبة"}`,
-          headerTitleAlign: "center",
-          tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon
-              name={focused ? "book" : "book-outline"}
               color={color}
             />
           ),

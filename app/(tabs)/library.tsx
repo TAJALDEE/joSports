@@ -8,10 +8,12 @@ import {
   I18nManager,
   FlatList,
   Image,
+  View as RNView,
 } from "react-native";
 import { useThemeColor } from "@/hooks/useThemeColor";
 import { ThemedText as Text } from "@/components/ThemedText";
 import { ThemedViewProps, ThemedView as View } from "@/components/ThemedView";
+import { ThemedButtonSecondry } from "@/components/ThemedButtonSecondry";
 import { useLanguage } from "@/context/LanguageContext";
 import * as Icons from "@/assets/icons/icons";
 import LoadLibraryComponent from "@/components/LoadLibraryComponent"; // a switch that choose the import path
@@ -138,10 +140,11 @@ export default function SportsTab({ lightColor, darkColor }: ThemedViewProps) {
       if (playerId && playerId != "") {
         setPlayerId(""); // Go back to player selection
         return true; // Prevent default behavior
-      } else {
+      } else if (horizontal == false) {
+        setHorizontal(true);
         // Handle other back navigation if necessary, or allow default behavior
-        return false;
-      }
+        return true;
+      } else return false;
     };
 
     const backHandler = BackHandler.addEventListener(
@@ -442,11 +445,12 @@ export default function SportsTab({ lightColor, darkColor }: ThemedViewProps) {
             ))}
           </ScrollView>
         ) : (
-          <View
-            style={{
+          <ScrollView
+            contentContainerStyle={{
               flexDirection: language === "en" ? "row" : "row-reverse",
               flexWrap: "wrap",
               justifyContent: "center",
+              marginBottom: 24,
             }}
           >
             {sportsData.map((sport) => (
@@ -480,22 +484,30 @@ export default function SportsTab({ lightColor, darkColor }: ThemedViewProps) {
                 </Text>
               </Pressable>
             ))}
-          </View>
+          </ScrollView>
         )}
 
-        <View style={{ marginHorizontal: 32, margin: 4 }}>
-          <Pressable onPress={() => setHorizontal(!horizontal)}>
-            <Text>
-              {horizontal
+        <RNView
+          style={{
+            marginHorizontal: 32,
+            margin: 4,
+          }}
+        >
+          <ThemedButtonSecondry
+            title={
+              horizontal
                 ? language === "en"
                   ? "show all"
                   : "اظهار الجميع"
                 : language === "en"
                 ? "show less"
-                : "اظهار اقل"}
-            </Text>
-          </Pressable>
-        </View>
+                : "اظهار اقل"
+            }
+            onPress={() => {
+              setHorizontal((prevState: any) => !prevState);
+            }}
+          />
+        </RNView>
       </View>
 
       {/* Secondary Options Bar */}

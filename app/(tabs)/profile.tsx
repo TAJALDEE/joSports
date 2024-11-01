@@ -82,13 +82,13 @@ const ProfilePage = ({ lightColor, darkColor }: ColorProps) => {
           {language === "en" ? "notification" : "اشعارات"}
         </Text>
         <Link
-          href={"/newsNotification"}
+          href={"/notification"}
           style={{ color: IconColor, paddingVertical: 12, fontSize: 16 }}
         >
           {language === "en" ? "news notification" : "اشعارات الاخبار"}
         </Link>
         <Link
-          href={"/profile"}
+          href={"/notification"}
           style={{ color: IconColor, paddingVertical: 12, fontSize: 16 }}
         >
           {language === "en"

@@ -5,14 +5,13 @@ import {
   Image,
   TouchableWithoutFeedback,
   View as RNView,
-  Pressable,
 } from "react-native";
 import { ThemedText as Text } from "@/components/ThemedText";
 import { ThemedButton } from "@/components/ThemedButton";
 import { ThemedViewProps, ThemedView as View } from "@/components/ThemedView";
 import { useRoute } from "@react-navigation/native";
-import ImageView from "react-native-image-viewing";
 import { useThemeColor } from "@/hooks/useThemeColor";
+import { useLanguage } from "@/context/LanguageContext";
 
 interface match {
   matchId: string;
@@ -26,19 +25,30 @@ interface match {
 
 export default function Tickets({ lightColor, darkColor }: ThemedViewProps) {
   const route = useRoute();
-  const { title, images, description, date, sportid, matchId } =
-    route.params as {
-      title: string;
-      images: string[];
-      description: string;
-      date: string;
-      sportid: string;
-      matchId: string;
-    };
+  const {
+    titleEn,
+    titleAr,
+    images,
+    descriptionEn,
+    descriptionAr,
+    date,
+    sportid,
+    matchId,
+  } = route.params as {
+    titleEn: string;
+    titleAr: string;
+    images: string[];
+    descriptionEn: string;
+    descriptionAr: string;
+    date: string;
+    sportid: string;
+    matchId: string;
+  };
 
   const [matchData, setMatchData] = useState<null | match>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<null | string>(null);
+  const { language } = useLanguage();
 
   useEffect(() => {
     const controller = new AbortController();
@@ -96,7 +106,7 @@ export default function Tickets({ lightColor, darkColor }: ThemedViewProps) {
   return (
     <View style={styles.container}>
       <ScrollView>
-        <Text style={styles.title}>{title}</Text>
+        <Text style={styles.title}>{language == "en" ? titleEn : titleAr}</Text>
 
         <View style={styles.imageContainer}>
           {formattedImages.map((image, index) => (
@@ -112,26 +122,23 @@ export default function Tickets({ lightColor, darkColor }: ThemedViewProps) {
           ))}
         </View>
 
-        <ImageView
-          images={formattedImages}
-          imageIndex={imageIndex}
-          visible={visible}
-          onRequestClose={() => setIsVisible(false)}
-        />
-
-        <Text style={styles.description}>{description}</Text>
+        <Text style={styles.description}>
+          {language == "en" ? descriptionEn : descriptionAr}
+        </Text>
         {/* Ticket Purchase Options */}
         <View style={{ alignItems: "center", padding: 16 }}>
-          <Text type="title">Buy a Ticket</Text>
+          <Text type="title">
+            {language == "en" ? "Buy a Ticket" : "أشتري تذكرة"}
+          </Text>
           <View style={{ width: "100%" }}>
             <ThemedButton
-              title="Vip"
+              title={language == "en" ? "Vip" : "Vip"}
               onPress={() => {
                 alert("no avaible tickets for this at the moment");
               }}
             />
             <ThemedButton
-              title="normal"
+              title={language == "en" ? "normal" : "عادي"}
               onPress={() => {
                 alert("no avaible tickets for this at the moment");
               }}
